@@ -12,8 +12,23 @@ POST {{BASE_URL}}/api/auth/login
 ###post message
 POST {{BASE_URL}}/api/post
 
-###
+### notfound
 GET  {{BASE_URL}}/api/product
 
 ###
 GET {{BASE_URL}}/api/auth/me
+
+### Register api
+POST http://localhost:8899/api/auth/register HTTP/1.1
+content-type: application/json
+
+{
+# "identity" : "andy@ggg.mail",
+  "identity" : "3333333333",
+# "identity" : "someone@ggg.mail",
+ "firstName" : "someone",
+ "lastName" : "codecamp",
+ "password" : "123456",
+ "confirmPassword" : "123456"
+}
+###

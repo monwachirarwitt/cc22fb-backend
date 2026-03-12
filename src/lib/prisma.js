@@ -14,4 +14,13 @@ const prisma = new PrismaClient({ adapter });
 // prisma.$queryRawUnsafe('show tables').then(console.log)
 
 
+
+const modelNames = Object.keys(prisma).filter(
+  (key) => !key.startsWith('$') && !key.startsWith('_')
+);
+
+console.log(modelNames);
+
+
+
 export { prisma }
