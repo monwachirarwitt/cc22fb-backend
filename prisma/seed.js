@@ -35,27 +35,18 @@ const userData = [
 ];
 
 async function main() {
-    console.log('Start clean table...');
+    console.log('Clean table...');
 
-    // แยกคำสั่งออกมาจาก Transaction เพื่อให้การปิด Foreign Key Check มีผลแน่นอนใน Session นี้
-    try {
-        await prisma.$executeRawUnsafe('SET FOREIGN_KEY_CHECKS = 0;');
-        
-        // ล้างข้อมูลทุกตารางที่เกี่ยวข้อง
-        await prisma.$executeRawUnsafe('TRUNCATE TABLE `Like`;');
-        await prisma.$executeRawUnsafe('TRUNCATE TABLE `Comment`;');
-        await prisma.$executeRawUnsafe('TRUNCATE TABLE `Post`;');
-        await prisma.$executeRawUnsafe('TRUNCATE TABLE `Relationship`;');
-        await prisma.$executeRawUnsafe('TRUNCATE TABLE `User`;');
-
-        await prisma.$executeRawUnsafe('SET FOREIGN_KEY_CHECKS = 1;');
-        console.log('Clean tables successfully.');
-    } catch (error) {
-        console.error('Error cleaning tables:', error);
-        // พยายามเปิดกลับคืนหากเกิด Error ระหว่างล้าง
-        await prisma.$executeRawUnsafe('SET FOREIGN_KEY_CHECKS = 1;');
-        throw error;
-    }
+    // ใช้ $transaction แบบในรูปของอาจารย์ เพื่อบังคับให้อยู่ใน Session เดียวกัน
+    await prisma.$transaction([
+        prisma.$executeRawUnsafe('SET FOREIGN_KEY_CHECKS = 0;'),
+        prisma.$executeRawUnsafe('TRUNCATE TABLE `Like`;'),
+        prisma.$executeRawUnsafe('TRUNCATE TABLE `Comment`;'),
+        prisma.$executeRawUnsafe('TRUNCATE TABLE `Post`;'),
+        prisma.$executeRawUnsafe('TRUNCATE TABLE `Relationship`;'),
+        prisma.$executeRawUnsafe('TRUNCATE TABLE `User`;'),
+        prisma.$executeRawUnsafe('SET FOREIGN_KEY_CHECKS = 1;')
+    ]);
 
     console.log('Start seeding...');
     
@@ -65,11 +56,12 @@ async function main() {
         skipDuplicates: true,
     });
 
-    console.log(`Created ${createdUsers.count} users.`);
+    console.log(`Created : ${createdUsers.count} users`);
 }
 
 main()
     .then(async () => {
+        console.log('The seed command has been executed.');
         await prisma.$disconnect();
     })
     .catch(async (e) => {
