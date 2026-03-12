@@ -11,5 +11,6 @@ export function login(req,res, next) {
 }
 
 export const getMe = (req,res, next) => {
+  console.log(x)
  res.json({msg : 'GetMe controller'})
 }

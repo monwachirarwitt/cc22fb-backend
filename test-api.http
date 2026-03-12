@@ -12,5 +12,8 @@ POST {{BASE_URL}}/api/auth/login
 ###post message
 POST {{BASE_URL}}/api/post
 
-###fff
-POST {{BASE_URL}}/register
+###
+GET  {{BASE_URL}}/api/product
+
+###
+GET {{BASE_URL}}/api/auth/me
